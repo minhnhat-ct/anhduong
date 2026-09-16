@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phương pháp & Kĩ thuật dạy học KHTN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* === BIẾN MÀU SẮC & UI === */
+        :root {
+            --bg-color: #FFF9E6; 
+            --primary-orange: #F26522; 
+            --primary-blue: #4285F4; 
+            --primary-green: #34A853; 
+            --primary-red: #EA4335;
+            --primary-purple: #8A2BE2;
+            --border-color: #111111;
+            --text-color: #111111;
+            --card-bg: #FFFFFF;
+            
+            --border-width: 3px;
+            --border-radius: 20px;
+            --box-shadow: 6px 6px 0px var(--border-color);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            background-image: radial-gradient(rgba(242, 101, 34, 0.2) 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+
+        /* === HIỆU ỨNG CHUYỂN TRANG === */
+        .screen {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* === THANH ĐIỀU HƯỚNG === */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: var(--bg-color);
+            border-bottom: var(--border-width) solid var(--border-color);
+            padding: 15px 30px;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 0 rgba(0,0,0,1);
+        }
+        .nav-links { display: flex; gap: 15px; flex-wrap: wrap;}
+
+        .btn {
+            background-color: var(--card-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 3px 3px 0px var(--border-color);
+            transition: all 0.2s ease;
+            color: var(--text-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
+        .btn:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0px var(--border-color); }
+        .btn:active { transform: translate(3px, 3px); box-shadow: 0px 0px 0px var(--border-color); }
+        .btn-orange { background-color: var(--primary-orange); color: white; }
+        .btn-green { background-color: var(--primary-green); color: white; }
+
+        main {
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 100px; /* Space for footer */
+        }
+        .main-padding { padding: 100px 20px 40px; }
+
+        /* =========================================
+           MÀN HÌNH 0: INTRO SCREEN
+           ========================================= */
+        #intro {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .intro-container {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .intro-bg {
+            position: absolute;
+            top: 20px;
+            left: -20px;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-orange);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 30px;
+            z-index: 1;
+        }
+
+        .intro-content {
+            position: relative;
+            background-color: white;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 30px;
+            padding: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 2;
+            min-height: 400px;
+        }
+
+        .intro-text {
+            flex: 1;
+            padding-right: 40px;
+        }
+
+        .intro-text h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1.2;
+            color: var(--text-color);
+            margin-bottom: 30px;
+        }
+
+        .intro-image-wrapper {
+            position: relative;
+            width: 350px;
+            height: 350px;
+        }
+
+        .intro-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 4px solid var(--border-color);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; 
+            box-shadow: var(--box-shadow);
+        }
+
+        .deco-star {
+            position: absolute;
+            top: -20px;
+            left: -30px;
+            font-size: 3rem;
+            color: #FFE066;
+            text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+            z-index: 3;
+        }
+        .deco-pen {
+            position: absolute;
+            bottom: -30px;
+            left: -50px;
+            width: 150px;
+            z-index: 3;
+            transform: rotate(-15deg);
+        }
+        .deco-wave {
+            position: absolute;
+            bottom: -40px;
+            right: -20px;
+            width: 120px;
+            z-index: 3;
+        }
+
+        /* =========================================
+           MÀN HÌNH CHỌN & TRANG CHỦ
+           ========================================= */
+        .page-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 50px;
+            background-color: #FFE066;
+            display: inline-block;
+            padding: 15px 40px;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 40px;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .home-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .big-card {
+            flex: 1;
+            min-width: 280px;
+            background-color: var(--card-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 8px 8px 0px var(--border-color);
+            transition: all 0.3s ease;
+        }
+        .big-card:hover { transform: translateY(-10px); }
+        .big-card i { font-size: 4rem; margin-bottom: 15px; }
+        .big-card h2 { font-size: 1.8rem; font-weight: 900; }
+
+        /* =========================================
+           BẢN ĐỒ TƯƠNG TÁC
+           ========================================= */
+        .map-area {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            height: 600px;
+            margin: 0 auto;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/World_map_blank_without_borders.svg/1000px-World_map_blank_without_borders.svg.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.9;
+        }
+
+        .pin {
+            position: absolute;
+            background-color: var(--card-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px 25px;
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: 4px 4px 0px rgba(0,0,0,1);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .pin:hover { transform: translateY(-10px) scale(1.05); }
+
+        .pin::before {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            width: 20px;
+            height: 20px;
+            background-color: inherit;
+            border-right: var(--border-width) solid var(--border-color);
+            border-bottom: var(--border-width) solid var(--border-color);
+            z-index: -1;
+        }
+
+        .pin i { font-size: 2rem; }
+
+        .pin-red { background-color: var(--primary-red); }
+        .pin-orange { background-color: var(--primary-orange); }
+        .pin-blue { background-color: var(--primary-blue); }
+        .pin-green { background-color: var(--primary-green); }
+        .pin-purple { background-color: var(--primary-purple); }
+
+        /* Vị trí Map Phương pháp */
+        #pin-m-1 { top: 10%; left: 15%; }
+        #pin-m-2 { top: 35%; left: 45%; }
+        #pin-m-3 { top: 60%; left: 20%; }
+        #pin-m-4 { top: 75%; left: 70%; }
+
+        /* Vị trí Map Kĩ thuật */
+        #pin-t-1 { top: 20%; left: 20%; }
+        #pin-t-2 { top: 10%; left: 60%; }
+        #pin-t-3 { top: 50%; left: 75%; }
+        #pin-t-4 { top: 70%; left: 30%; }
+
+        .map-svg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .dashed-line {
+            fill: none;
+            stroke: var(--primary-red);
+            stroke-width: 4;
+            stroke-dasharray: 10, 10;
+            animation: dash 20s linear infinite;
+        }
+        @keyframes dash { to { stroke-dashoffset: 1000; } }
+
+        /* =========================================
+           TRANG CHI TIẾT
+           ========================================= */
+        .detail-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .detail-header i { font-size: 3.5rem; color: var(--primary-orange); margin-bottom: 10px; }
+        .detail-header h1 { font-size: 2.5rem; font-weight: 900; }
+
+        .content-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .info-card {
+            background-color: var(--card-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: 4px 4px 0px var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--border-color);
+        }
+        .info-card-header h3 { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; }
+        .info-card-header i { font-size: 1.8rem; }
+
+        .card-banchat h3 { color: var(--primary-blue); }
+        .card-quytrinh h3 { color: var(--primary-purple); }
+        .card-uudiem h3 { color: var(--primary-green); }
+        .card-nhuocdiem h3 { color: var(--primary-red); }
+        .card-dieukien h3 { color: var(--primary-orange); }
+
+        .text-content p { margin-bottom: 15px; line-height: 1.7; font-size: 1.1rem; font-weight: 600; }
+        .text-content ul { list-style-type: none; margin-bottom: 15px; }
+        
+        .text-content ul li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .text-content ul li::before {
+            content: '-';
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-weight: 800;
+            color: var(--text-color);
+        }
+        .text-content strong { color: var(--primary-orange); font-weight: 800;}
+
+        .illustration-box {
+            width: 100%;
+            height: auto;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+            background-color: white;
+            padding: 10px;
+        }
+        .illustration-box img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            display: block;
+        }
+
+        /* =========================================
+           MÀN HÌNH ĐỀ XUẤT (QUIZ)
+           ========================================= */
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .question-box {
+            background-color: var(--card-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 4px 4px 0px var(--border-color);
+        }
+
+        .question-box h3 {
+            font-size: 1.4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+            border-bottom: 2px dashed #ccc;
+            padding-bottom: 10px;
+        }
+
+        .options-group label {
+            display: block;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+        .options-group label:hover {
+            background-color: #FEF9F5;
+            transform: translateX(5px);
+        }
+        .options-group input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.3);
+        }
+        .options-group input[type="radio"]:checked + span {
+            color: var(--primary-orange);
+            font-weight: 800;
+        }
+
+        .result-box {
+            background-color: #E8F5E9;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: var(--box-shadow);
+            display: none; /* Hidden default */
+        }
+        .result-box h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+        .result-item {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .result-item.primary { border-color: var(--primary-blue); border-width: 4px;}
+        .result-item h4 { font-size: 1.3rem; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;}
+        .result-item p { margin-bottom: 10px; font-weight: 600; line-height: 1.6;}
+        
+        /* =========================================
+           FOOTER
+           ========================================= */
+        footer {
+            background-color: white;
+            border-top: var(--border-width) solid var(--border-color);
+            padding: 40px 20px;
+            margin-top: 50px;
+            display: none; /* Hiển thị cùng main */
+        }
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .footer-col {
+            text-align: center;
+            background-color: var(--bg-color);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 4px 4px 0px var(--border-color);
+            flex: 1;
+            min-width: 250px;
+        }
+        .footer-col h3 { font-size: 1.2rem; font-weight: 900; margin-bottom: 15px; text-transform: uppercase;}
+        .footer-col img {
+            width: 150px;
+            height: 150px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .footer-col a {
+            display: inline-block;
+            background-color: var(--primary-orange);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            font-weight: 800;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .footer-col a:hover { transform: translateY(-3px); box-shadow: 3px 3px 0 var(--border-color); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .intro-content { flex-direction: column; text-align: center; padding: 30px; }
+            .intro-text { padding-right: 0; margin-bottom: 30px; }
+            .intro-image-wrapper { width: 250px; height: 250px; }
+            .content-layout { grid-template-columns: 1fr; }
+            .home-grid { flex-direction: column; }
+            .map-area { height: 800px; }
+            #pin-m-1, #pin-m-2, #pin-m-3, #pin-m-4,
+            #pin-t-1, #pin-t-2, #pin-t-3, #pin-t-4 {
+                position: relative; top: auto !important; left: auto !important; margin: 20px auto; width: 80%;
+            }
+            .map-svg { display: none; }
+            nav { flex-wrap: wrap; justify-content: center; gap: 10px; padding: 10px;}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MÀN HÌNH 0: INTRO -->
+    <section id="intro" class="screen active">
+        <div class="intro-container">
+            <div class="intro-bg"></div>
+            <div class="intro-content">
+                <i class="fas fa-star deco-star"></i>
+                <div class="intro-text">
+                    <h1>Một số<br>phương pháp và kỹ thuật dạy học trong<br>môn Khoa học Tự nhiên</h1>
+                    <button class="btn btn-orange" style="font-size: 1.2rem; padding: 15px 30px;" onclick="enterApp()">
+                        Bắt đầu khám phá <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="intro-image-wrapper">
+                    <img class="intro-photo" src="https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/khoa_hoc_tu_nhien_la_gi_3_ddb896b691.jpg" alt="Khoa học Tự nhiên">
+                </div>
+                
+                <svg class="deco-wave" viewBox="0 0 100 50">
+                    <path fill="none" stroke="#4285F4" stroke-width="8" stroke-linecap="round" d="M5,25 Q15,5 30,25 T60,25 T90,25"/>
+                </svg>
+                <svg class="deco-pen" viewBox="0 0 200 50">
+                    <rect x="20" y="20" width="120" height="15" fill="#F26522" stroke="#111" stroke-width="3"/>
+                    <polygon points="140,20 170,27.5 140,35" fill="#FFE066" stroke="#111" stroke-width="3"/>
+                    <polygon points="170,27.5 180,27.5 170,30" fill="#111"/>
+                    <rect x="10" y="15" width="10" height="25" fill="#34A853" stroke="#111" stroke-width="3"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- THANH ĐIỀU HƯỚNG CHÍNH -->
+    <nav id="main-nav">
+        <button class="btn btn-orange" onclick="navigate('home')"><i class="fas fa-home"></i> Trang chủ</button>
+        <div class="nav-links">
+            <button class="btn" onclick="navigate('methods')">Phương pháp</button>
+            <button class="btn" onclick="navigate('techniques')">Kĩ thuật</button>
+            <button class="btn btn-green" onclick="navigate('quiz')"><i class="fas fa-magic"></i> Đề xuất</button>
+            <button class="btn" onclick="goBack()" id="btn-back" style="display: none;"><i class="fas fa-arrow-left"></i> Quay lại</button>
+        </div>
+    </nav>
+
+    <main id="main-content" style="display: none;">
+        
+        <!-- MÀN HÌNH 1: TRANG CHỦ CHỌN -->
+        <section id="home" class="screen main-padding">
+            <h1 class="page-title">NỘI DUNG CẦN TÌM HIỂU</h1>
+            <div class="home-grid">
+                <div class="big-card" style="border-bottom-width: 10px; border-bottom-color: var(--primary-orange);" onclick="navigate('methods')">
+                    <i class="fas fa-chalkboard-teacher" style="color: var(--primary-orange)"></i>
+                    <h2>PHƯƠNG PHÁP<br>DẠY HỌC</h2>
+                </div>
+                <div class="big-card" style="border-bottom-width: 10px; border-bottom-color: var(--primary-blue);" onclick="navigate('techniques')">
+                    <i class="fas fa-tools" style="color: var(--primary-blue)"></i>
+                    <h2>KĨ THUẬT<br>DẠY HỌC</h2>
+                </div>
+                <!-- Bổ sung nút Đề xuất -->
+                <div class="big-card" style="border-bottom-width: 10px; border-bottom-color: var(--primary-green);" onclick="navigate('quiz')">
+                    <i class="fas fa-lightbulb" style="color: var(--primary-green)"></i>
+                    <h2>TÌM PPDH<br>PHÙ HỢP</h2>
+                </div>
+            </div>
+        </section>
+
+        <!-- MÀN HÌNH 2: BẢN ĐỒ PHƯƠNG PHÁP -->
+        <section id="methods" class="screen main-padding">
+            <h1 class="page-title">BẢN ĐỒ PHƯƠNG PHÁP</h1>
+            <div class="map-area">
+                <svg class="map-svg">
+                    <path class="dashed-line" d="M 200 150 Q 300 50, 480 250 T 300 400 Q 500 550, 750 480" />
+                </svg>
+                <div class="pin pin-red" id="pin-m-1" onclick="openDetail('phuong_phap', 'truc_quan')">
+                    <i class="fas fa-eye"></i> TRỰC QUAN
+                </div>
+                <div class="pin pin-orange" id="pin-m-2" onclick="openDetail('phuong_phap', 'lapmap')">
+                    <i class="fas fa-hand-paper"></i> LAPMAP
+                </div>
+                <div class="pin pin-blue" id="pin-m-3" onclick="openDetail('phuong_phap', 'stem')">
+                    <i class="fas fa-robot"></i> DẠY HỌC STEM
+                </div>
+                <div class="pin pin-green" id="pin-m-4" onclick="openDetail('phuong_phap', 'kham_pha')">
+                    <i class="fas fa-search-location"></i> KHÁM PHÁ
+                </div>
+            </div>
+        </section>
+
+        <!-- MÀN HÌNH 3: BẢN ĐỒ KĨ THUẬT -->
+        <section id="techniques" class="screen main-padding">
+            <h1 class="page-title">BẢN ĐỒ KĨ THUẬT</h1>
+            <div class="map-area">
+                <svg class="map-svg">
+                    <path class="dashed-line" d="M 250 180 Q 400 100, 650 120 T 800 350 Q 600 550, 350 460" />
+                </svg>
+                <div class="pin pin-purple" id="pin-t-1" onclick="openDetail('ki_thuat', 'manh_ghep')">
+                    <i class="fas fa-puzzle-piece"></i> MẢNH GHÉP
+                </div>
+                <div class="pin pin-red" id="pin-t-2" onclick="openDetail('ki_thuat', 'kwl')">
+                    <i class="fas fa-table"></i> KWL
+                </div>
+                <div class="pin pin-green" id="pin-t-3" onclick="openDetail('ki_thuat', 'khan_trai_ban')">
+                    <i class="fas fa-users"></i> KHĂN TRẢI BÀN
+                </div>
+                <div class="pin pin-orange" id="pin-t-4" onclick="openDetail('ki_thuat', 'so_do_tu_duy')">
+                    <i class="fas fa-project-diagram"></i> SƠ ĐỒ TƯ DUY
+                </div>
+            </div>
+        </section>
+
+        <!-- MÀN HÌNH 4: TRANG CHI TIẾT NỘI DUNG -->
+        <section id="detail" class="screen main-padding">
+            <div class="detail-header">
+                <i id="detail-icon" class="fas fa-star"></i>
+                <h1 id="detail-title">Tên nội dung</h1>
+            </div>
+            
+            <div class="content-layout">
+                <div class="column-left">
+                    <div class="info-card card-banchat">
+                        <div class="info-card-header">
+                            <i class="fas fa-info-circle" style="color: var(--primary-blue)"></i>
+                            <h3>Bản chất</h3>
+                        </div>
+                        <div class="text-content" id="detail-banchat"></div>
+                    </div>
+                    <div class="illustration-box">
+                        <img id="detail-image" src="" alt="Minh họa">
+                    </div>
+                    <div class="info-card card-quytrinh">
+                        <div class="info-card-header">
+                            <i class="fas fa-cogs" style="color: var(--primary-purple)"></i>
+                            <h3>Quy trình tổ chức</h3>
+                        </div>
+                        <div class="text-content" id="detail-quytrinh"></div>
+                    </div>
+                </div>
+
+                <div class="column-right">
+                    <div class="info-card card-uudiem">
+                        <div class="info-card-header">
+                            <i class="fas fa-check-circle" style="color: var(--primary-green)"></i>
+                            <h3>Ưu điểm</h3>
+                        </div>
+                        <div class="text-content" id="detail-uudiem"></div>
+                    </div>
+                    <div class="info-card card-nhuocdiem">
+                        <div class="info-card-header">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--primary-red)"></i>
+                            <h3>Hạn chế</h3>
+                        </div>
+                        <div class="text-content" id="detail-nhuocdiem"></div>
+                    </div>
+                    <div class="info-card card-dieukien">
+                        <div class="info-card-header">
+                            <i class="fas fa-flask" style="color: var(--primary-orange)"></i>
+                            <h3>Điều kiện áp dụng trong KHTN</h3>
+                        </div>
+                        <div class="text-content" id="detail-dieukien"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MÀN HÌNH 5: ĐỀ XUẤT (QUIZ) -->
+        <section id="quiz" class="screen main-padding">
+            <h1 class="page-title">ĐỀ XUẤT PPDH PHÙ HỢP</h1>
+            <div class="quiz-container">
+                <p style="text-align: center; margin-bottom: 30px; font-weight: 600; font-size: 1.1rem;">Hãy trả lời 5 câu hỏi dưới đây để hệ thống tính toán và đưa ra phương pháp / kĩ thuật phù hợp nhất cho bài dạy của bạn!</p>
+                
+                <form id="quizForm">
+                    <!-- Câu 1 -->
+                    <div class="question-box">
+                        <h3>Câu 1: Đặc điểm nội dung cốt lõi của bài dạy này là gì?</h3>
+                        <div class="options-group">
+                            <label><input type="radio" name="q1" value="A"><span>A. Nội dung từ trừu tượng đến thực tiễn, cần minh họa chính xác bản chất kiến thức bằng hình ảnh, mô hình.</span></label>
+                            <label><input type="radio" name="q1" value="B"><span>B. Hiện tượng tự nhiên có thể quan sát, sờ nắm hoặc làm thí nghiệm trực tiếp, cần tránh nội dung trừu tượng.</span></label>
+                            <label><input type="radio" name="q1" value="C"><span>C. Chủ đề tích hợp liên môn (khoa học, công nghệ, kĩ thuật, toán) để hướng tới ứng dụng thực tế.</span></label>
+                            <label><input type="radio" name="q1" value="D"><span>D. Chủ đề gồm các mảng kiến thức độc lập và có độ khó tương đương nhau.</span></label>
+                            <label><input type="radio" name="q1" value="E"><span>E. Chủ đề có tính mở, đa chiều, gợi mở hiện tượng tự nhiên gần gũi cần khai thác kinh nghiệm sống.</span></label>
+                        </div>
+                    </div>
+
+                    <!-- Câu 2 -->
+                    <div class="question-box">
+                        <h3>Câu 2: Thành phần năng lực Khoa học Tự nhiên trọng tâm mà bài học hướng tới là gì?</h3>
+                        <div class="options-group">
+                            <label><input type="radio" name="q2" value="A"><span>A. Phát triển nhận thức KHTN thông qua quan sát biểu tượng chân thực và xâu chuỗi hệ thống khái niệm.</span></label>
+                            <label><input type="radio" name="q2" value="B"><span>B. Phát triển tìm hiểu tự nhiên qua việc tự đề xuất giả thuyết, thiết kế phương án và làm thí nghiệm nghiên cứu.</span></label>
+                            <label><input type="radio" name="q2" value="C"><span>C. Phát triển vận dụng kiến thức, kĩ năng để giải quyết bài toán thực tế hoặc chế tạo sản phẩm.</span></label>
+                            <label><input type="radio" name="q2" value="D"><span>D. Phát triển nhận thức qua việc kích hoạt kiến thức nền và tự theo dõi tiến trình nhận thức của bản thân.</span></label>
+                        </div>
+                    </div>
+
+                    <!-- Câu 3 -->
+                    <div class="question-box">
+                        <h3>Câu 3: Hình thức tổ chức hoạt động học tập chủ đạo thầy/cô mong muốn là gì?</h3>
+                        <div class="options-group">
+                            <label><input type="radio" name="q3" value="A"><span>A. Học sinh khai thác nguồn thông tin từ phương tiện (video, vật thật) dưới sự định hướng của giáo viên.</span></label>
+                            <label><input type="radio" name="q3" value="B"><span>B. Từ tình huống xuất phát, học sinh tự đặt câu hỏi và thực hành thí nghiệm để hợp thức hóa kiến thức.</span></label>
+                            <label><input type="radio" name="q3" value="C"><span>C. Mỗi cá nhân trở thành chuyên gia một lĩnh vực, sau đó đổi nhóm để chia sẻ và giải quyết nhiệm vụ phức hợp.</span></label>
+                            <label><input type="radio" name="q3" value="D"><span>D. Cá nhân độc lập suy nghĩ ý tưởng, sau đó thảo luận nhóm và ghi kết quả thống nhất vào phần trung tâm.</span></label>
+                            <label><input type="radio" name="q3" value="E"><span>E. Lập danh sách những điều đã biết, muốn biết trước khi học và đối chiếu lại những điều đã học được.</span></label>
+                        </div>
+                    </div>
+
+                    <!-- Câu 4 -->
+                    <div class="question-box">
+                        <h3>Câu 4: Sản phẩm học tập mong đợi nhất để đánh giá học sinh trong bài này là gì?</h3>
+                        <div class="options-group">
+                            <label><input type="radio" name="q4" value="A"><span>A. Học sinh rút ra kết luận khoa học hoặc hoàn thành sơ đồ trực quan biểu diễn bằng từ khóa, hình ảnh.</span></label>
+                            <label><input type="radio" name="q4" value="B"><span>B. Phiếu học tập thể hiện rõ tiến trình 3 bước: kích hoạt kiến thức cũ, khơi gợi tò mò và tổng kết kiến thức mới.</span></label>
+                            <label><input type="radio" name="q4" value="C"><span>C. Lời giải chung cho vấn đề đa góc nhìn được tập hợp từ sự hợp tác, chia sẻ của các thành viên.</span></label>
+                            <label><input type="radio" name="q4" value="D"><span>D. Kết quả thực nghiệm và những phán đoán, kết luận đúng được hình thành qua trải nghiệm và tư duy.</span></label>
+                            <label><input type="radio" name="q4" value="E"><span>E. Một mẫu chế tạo, sản phẩm thiết kế có thể thử nghiệm, đánh giá và chia sẻ.</span></label>
+                        </div>
+                    </div>
+
+                    <!-- Câu 5 -->
+                    <div class="question-box">
+                        <h3>Câu 5: Điều kiện về cơ sở vật chất và thời lượng tổ chức bài học như thế nào?</h3>
+                        <div class="options-group">
+                            <label><input type="radio" name="q5" value="A"><span>A. Tiết học bình thường; chỉ cần bảng phụ, giấy khổ lớn, phiếu học tập hoặc bút nhiều màu.</span></label>
+                            <label><input type="radio" name="q5" value="B"><span>B. Không gian lớp học linh hoạt để di chuyển, xếp bàn ghế theo nhóm và đủ thời gian cho nhiều vòng hoạt động.</span></label>
+                            <label><input type="radio" name="q5" value="C"><span>C. Đòi hỏi không gian thực hành, có đủ vật tư, hóa chất an toàn và dụng cụ thí nghiệm.</span></label>
+                            <label><input type="radio" name="q5" value="D"><span>D. Đòi hỏi thời lượng kéo dài (trên lớp và ở nhà), cần vật liệu chế tạo đa dạng.</span></label>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <button type="button" class="btn btn-green" style="font-size: 1.3rem; padding: 15px 40px;" onclick="calculateResults()">
+                            <i class="fas fa-cogs"></i> Phân tích kết quả
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Khu vực hiển thị kết quả -->
+                <div id="quiz-result-area" class="result-box">
+                    <h2>KẾT QUẢ PHÂN TÍCH</h2>
+                    <p style="text-align: center; margin-bottom: 20px; font-weight: 600;">Dựa trên các đặc điểm bạn vừa cung cấp, hệ thống đề xuất tổ chức bài học như sau:</p>
+                    <div id="result-content"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER MỚI ĐƯỢC BỔ SUNG -->
+    <footer id="main-footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3><i class="fas fa-globe"></i> Truy cập Website</h3>
+                <!-- Mã QR tạo tự động từ API dựa trên link -->
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://sites.google.com/view/ppdhvaktdh/trang-ch%E1%BB%A7" alt="QR Website">
+                <br>
+                <a href="https://sites.google.com/view/ppdhvaktdh/trang-ch%E1%BB%A7" target="_blank">Mở Link Web</a>
+            </div>
+            
+            <div class="footer-col">
+                <h3><i class="fas fa-file-pdf"></i> Tải Tài Liệu PDF</h3>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://sites.google.com/view/motsoppvakt/trang-ch%E1%BB%A7" alt="QR Tài liệu PDF">
+                <br>
+                <a href="https://sites.google.com/view/motsoppvakt/trang-ch%E1%BB%A7" target="_blank" style="background-color: var(--primary-blue);">Mở Link Tài liệu</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- LOGIC DỮ LIỆU & JAVASCRIPT -->
+    <script>
+        // --- 1. DỮ LIỆU CHUYÊN MÔN ---
+        const db = {
+            phuong_phap: {
+                truc_quan: {
+                    title: "Phương pháp dạy học trực quan",
+                    icon: "fa-eye",
+                    image: "https://edu.viettel.vn/upload/100198/fck/77752507/image(481).png",
+                    banchat: "<p>Là hoạt động dạy học trong đó GV tổ chức sử dụng các phương tiện trực quan để cung cấp thông tin giúp HS khám phá kiến thức mới, ôn tập, củng cố kiến thức hoặc kiểm tra, đánh giá.</p>",
+                    quytrinh: "<p><strong>Bước 1:</strong> Xác định mục tiêu và nội dung.<br><strong>Bước 2:</strong> Chuẩn bị phương tiện trực quan.<br><strong>Bước 3:</strong> Thiết kế nhiệm vụ học tập.<br><strong>Bước 4:</strong> Sử dụng phương tiện trực quan trong tiến trình dạy học.<br><strong>Bước 5:</strong> Rút kinh nghiệm.</p>",
+                    uudiem: "<ul><li>Tác động đến sự hứng thú cho HS.</li><li>Cho biểu tượng chân thực, sinh động.</li><li>Làm điểm tựa lĩnh hội kiến thức trừu tượng.</li><li>Phát triển thành phần nhận thức KHTN.</li></ul>",
+                    nhuocdiem: "<ul><li>Dễ phân tán sự chú ý nếu lạm dụng.</li><li>Đòi hỏi cơ sở vật chất.</li></ul>",
+                    dieukien: "<ul><li>Sử dụng trong hầu hết mạch nội dung.</li><li>Phương tiện phải minh họa chính xác.</li></ul>"
+                },
+                kham_pha: {
+                    title: "Phương pháp dạy học khám phá",
+                    icon: "fa-search-location",
+                    image: "https://cdn.phototourl.com/member/2026-09-16-3b240d0f-e5b7-4616-a817-391b44acda66.png",
+                    banchat: "<p>Trong đó HS tự tìm tòi, khám phá phát hiện ra tri thức mới thông qua các hoạt động dưới sự hướng dẫn, định hướng của GV.</p>",
+                    quytrinh: "<p>Gồm Chuẩn bị (Xác định mục đích, vấn đề, cách thức thu thập...) và Tổ chức (Giao nhiệm vụ, Thực hiện nhiệm vụ kiểm chứng giả thuyết, Trình bày đánh giá).</p>",
+                    uudiem: "<ul><li>Phát triển tư duy bậc cao, phản biện.</li><li>Ghi nhớ sâu và lâu bằng trải nghiệm.</li><li>Hỗ trợ tính độc lập giải quyết vấn đề.</li></ul>",
+                    nhuocdiem: "<ul><li>Tốn thời gian.</li><li>Nguy cơ lệch hướng.</li><li>Đòi hỏi năng lực giáo viên cao.</li></ul>",
+                    dieukien: "<ul><li>Bài học có tính thực nghiệm, thực hành.</li><li>Đa số HS phải có kiến thức, kĩ năng cần thiết.</li></ul>"
+                },
+                stem: {
+                    title: "Phương pháp dạy học theo định hướng STEM",
+                    icon: "fa-robot",
+                    image: "https://media.licdn.com/dms/image/v2/D5612AQEF0O5zhAngRQ/article-inline_image-shrink_1000_1488/article-inline_image-shrink_1000_1488/0/1708078110872?e=2147483647&v=beta&t=GeYVH9-1Hwu-7YRma0cczIIo70HUtx3T9gkkS7YrtB0",
+                    banchat: "<p>Tiếp cận liên môn, tích hợp kiến thức từ nhiều lĩnh vực, kết hợp lý thuyết và thực hành, rèn luyện tư duy đa chiều chế tạo sản phẩm.</p>",
+                    quytrinh: "<p>Xác định vấn đề -> Nghiên cứu kiến thức nền -> Lựa chọn giải pháp -> Chế tạo mẫu, thử nghiệm -> Chia sẻ, thảo luận.</p>",
+                    uudiem: "<ul><li>Giáo dục kiến thức tích hợp.</li><li>Phát triển trọn vẹn năng lực vận dụng.</li><li>Khuyến khích sáng tạo.</li></ul>",
+                    nhuocdiem: "<ul><li>Yêu cầu khắt khe cơ sở vật chất.</li><li>Thời lượng thực hiện kéo dài.</li></ul>",
+                    dieukien: "<ul><li>Phù hợp phát triển năng lực vận dụng kiến thức, kỹ năng.</li><li>Cần liên kết với các môn Toán, Công nghệ, Tin học.</li></ul>"
+                },
+                lapmap: {
+                    title: "Phương pháp Bàn tay nặn bột (LAPMAP)",
+                    icon: "fa-hand-paper",
+                    image: "https://elisaprisco.com/wp-content/uploads/2024/10/160602258_m_normal_none.jpg",
+                    banchat: "<p>Dựa trên tiến trình tìm tòi khám phá. Học sinh tự nghiên cứu lý giải thuyết phục thông qua đề xuất, thảo luận và thực hiện thí nghiệm.</p>",
+                    quytrinh: "<ul><li>Tình huống xuất phát.</li><li>Hình thành câu hỏi.</li><li>Xây dựng giả thuyết & phương án.</li><li>Tiến hành thực nghiệm.</li><li>Kết luận.</li></ul>",
+                    uudiem: "<ul><li>Phát triển tri giác và trí tưởng tượng.</li><li>Rèn kỹ năng thực hành, thói quen tự tìm tòi.</li></ul>",
+                    nhuocdiem: "<ul><li>Rào cản thời gian, chuẩn bị.</li><li>Sỉ số đông khó kiểm soát.</li></ul>",
+                    dieukien: "<ul><li>Áp dụng bài có tính thực hành cao, hiện tượng sờ nắm được, tránh trừu tượng.</li><li>Cần đủ vật tư, hóa chất an toàn.</li></ul>"
+                }
+            },
+            ki_thuat: {
+                manh_ghep: {
+                    title: "Kĩ thuật mảnh ghép (Jigsaw)",
+                    icon: "fa-puzzle-piece",
+                    image: "https://cdn.phototourl.com/member/2026-09-16-29082c7a-f184-46d7-8510-a61e84f4ab83.png",
+                    banchat: "<p>Hoạt động hợp tác qua hai vòng. Cá nhân làm chuyên gia 1 vấn đề, sau đó tập hợp tạo nhóm mới để chia sẻ và giải quyết nhiệm vụ phức hợp.</p>",
+                    quytrinh: "<p><strong>Vòng 1:</strong> Nhóm chuyên gia nghiên cứu sâu 1 mảng.<br><strong>Vòng 2:</strong> Nhóm mảnh ghép tổng hợp để giải quyết vấn đề lớn.</p>",
+                    uudiem: "<ul><li>Giải quyết nhiệm vụ phức hợp hiệu quả.</li><li>Phát triển năng lực giao tiếp.</li></ul>",
+                    nhuocdiem: "<ul><li>Cần nhiều thời gian tổ chức.</li><li>Phụ thuộc khả năng trình bày của cá nhân.</li></ul>",
+                    dieukien: "<ul><li>Các chủ đề mang tính độc lập và độ khó tương đương.</li><li>Không gian lớp học linh hoạt.</li></ul>"
+                },
+                kwl: {
+                    title: "Kĩ thuật KWL",
+                    icon: "fa-table",
+                    image: "https://cdn.vectorstock.com/i/1000v/28/64/kwl-table-chart-theme-concept-for-slide-vector-54962864.jpg",
+                    banchat: "<p>Công cụ kích hoạt kiến thức nền: K (Know), W (Want to Know), L (Learned).</p>",
+                    quytrinh: "<ul><li>Cột K: Những điều đã biết.</li><li>Cột W: Những điều muốn biết.</li><li>Cột L: Những điều đã học được (cuối bài).</li></ul>",
+                    uudiem: "<ul><li>Kích hoạt kiến thức nền.</li><li>Tạo mục tiêu rõ ràng cho đọc hiểu/nghiên cứu.</li></ul>",
+                    nhuocdiem: "<ul><li>Khó nếu vốn kiến thức nền ban đầu yếu.</li><li>Cần bảo quản phiếu học tập qua nhiều tiết.</li></ul>",
+                    dieukien: "<ul><li>Chủ đề mang tính gợi mở, giải thích hiện tượng gần gũi.</li></ul>"
+                },
+                khan_trai_ban: {
+                    title: "Kĩ thuật khăn trải bàn",
+                    icon: "fa-users",
+                    image: "https://cdn.slidesharecdn.com/ss_thumbnails/123doc-ky-thuat-khan-trai-ban-220813072952-fbea2c5e-thumbnail.jpg?width=640&height=640&fit=bounds",
+                    banchat: "<p>Khuyến khích thảo luận, chia sẻ ý tưởng để giải quyết vấn đề chung trên một tờ giấy lớn chia ô.</p>",
+                    quytrinh: "<p>Mỗi cá nhân viết ý tưởng độc lập vào phần viền ngoài. Sau đó thảo luận, thống nhất ghi vào phần trung tâm.</p>",
+                    uudiem: "<ul><li>Tránh tình trạng ỷ lại.</li><li>Đánh giá được khả năng từng cá nhân.</li></ul>",
+                    nhuocdiem: "<ul><li>Khó khăn khâu chuẩn bị giấy, chỗ ngồi.</li><li>Khó kiểm soát hoàn toàn thời gian.</li></ul>",
+                    dieukien: "<ul><li>Chủ đề mở, đa chiều đòi hỏi động não đa góc nhìn.</li></ul>"
+                },
+                so_do_tu_duy: {
+                    title: "Kĩ thuật sơ đồ tư duy",
+                    icon: "fa-project-diagram",
+                    image: "https://bizweb.dktcdn.net/100/504/797/products/mo-ta-sp-khtn-6-cd-op2-tk-5-5bed055a-6d7f-46ed-8351-3ed350b06a5c.png?v=1769064999763",
+                    banchat: "<p>Trình bày thông tin trực quan bằng từ khóa, hình ảnh, màu sắc đi từ trung tâm tỏa ra các nhánh.</p>",
+                    quytrinh: "<p>Chủ đề trung tâm -> Các nhánh chính (khái niệm lớn) -> Nhánh phụ (chi tiết).</p>",
+                    uudiem: "<ul><li>Sắp xếp ý tưởng nhanh chóng, logic đa chiều.</li><li>Tăng khả năng ghi nhớ thông tin.</li></ul>",
+                    nhuocdiem: "<ul><li>Cần chuẩn bị phương tiện hoặc phần mềm.</li></ul>",
+                    dieukien: "<ul><li>Hiệu quả cho ôn tập, tổng kết xâu chuỗi khái niệm.</li></ul>"
+                }
+            }
+        };
+
+        // --- 2. LOGIC MA TRẬN TÍNH ĐIỂM THEO FILE DOCX ---
+        // PP: truc_quan (TQ), lapmap (LP), kham_pha (KP), stem (ST)
+        // KT: manh_ghep (MG), kwl (KW), khan_trai_ban (KTB), so_do_tu_duy (SD)
+        const scoringMatrix = {
+            q1: {
+                A: { pp: { truc_quan: 3 }, kt: { so_do_tu_duy: 2 } },
+                B: { pp: { lapmap: 3, kham_pha: 2 } },
+                C: { pp: { stem: 3 } },
+                D: { kt: { manh_ghep: 3 } },
+                E: { kt: { kwl: 3, khan_trai_ban: 2, so_do_tu_duy: 1 } }
+            },
+            q2: {
+                A: { pp: { truc_quan: 3 }, kt: { so_do_tu_duy: 3 } },
+                B: { pp: { lapmap: 3, kham_pha: 3 } },
+                C: { pp: { stem: 3 } },
+                D: { kt: { kwl: 3, khan_trai_ban: 1 } }
+            },
+            q3: {
+                A: { pp: { truc_quan: 3 }, kt: { so_do_tu_duy: 1 } },
+                B: { pp: { lapmap: 3, kham_pha: 3 } },
+                C: { kt: { manh_ghep: 3 } },
+                D: { kt: { khan_trai_ban: 3 } },
+                E: { kt: { kwl: 3 } }
+            },
+            q4: {
+                A: { pp: { truc_quan: 2 }, kt: { so_do_tu_duy: 3 } },
+                B: { kt: { kwl: 3 } },
+                C: { kt: { manh_ghep: 3, khan_trai_ban: 3 } },
+                D: { pp: { lapmap: 3, kham_pha: 3 } },
+                E: { pp: { stem: 3 } }
+            },
+            q5: {
+                A: { pp: { truc_quan: 2 }, kt: { manh_ghep: 2, kwl: 2, so_do_tu_duy: 3 } },
+                B: { kt: { manh_ghep: 3 } },
+                C: { pp: { lapmap: 3, kham_pha: 3 } },
+                D: { pp: { stem: 3 } }
+            }
+        };
+
+        const reasonsMap = {
+            truc_quan: "Bài dạy của bạn cần sử dụng hình ảnh/mô hình chân thực để xâu chuỗi khái niệm và thu hút sự chú ý. Phương pháp Trực quan đáp ứng tốt nhất vì giúp cụ thể hóa kiến thức trừu tượng thành trực quan.",
+            kham_pha: "Bài dạy hướng đến việc hình thành kiến thức thông qua tự tìm tòi và đòi hỏi học sinh trực tiếp thu thập dữ liệu bằng thí nghiệm. Phương pháp khám phá đáp ứng hoàn hảo môi trường này.",
+            lapmap: "Đặc điểm bài dạy có các hiện tượng tự nhiên dễ dàng sờ nắm, quan sát trực tiếp. Bàn tay nặn bột nhấn mạnh quy trình xuất phát từ mâu thuẫn nhận thức để đi đến hợp thức hóa kiến thức.",
+            stem: "Bạn muốn học sinh vận dụng kiến thức liên môn (Khoa học, Toán, Kĩ thuật...) để giải quyết bài toán thực tế và chế tạo sản phẩm. Dạy học STEM là lựa chọn số 1.",
+            kwl: "Bạn mong muốn kích hoạt kiến thức nền của học sinh và tạo mục tiêu rõ ràng. Bảng KWL (Đã biết - Muốn biết - Đã học) khơi gợi sự tò mò khi đối mặt với các hiện tượng tự nhiên.",
+            so_do_tu_duy: "Bài học yêu cầu học sinh rút ra kết luận khoa học và xâu chuỗi hệ thống. Sơ đồ tư duy dùng ở bước tổng kết sẽ sắp xếp lại các khái niệm một cách trực quan, đa chiều và logic nhất.",
+            manh_ghep: "Nội dung bài học có thể chia thành nhiều mảng kiến thức độc lập. Kĩ thuật mảnh ghép giúp chia sẻ chéo thông tin, biến mỗi cá nhân thành chuyên gia, tối ưu hóa học tập hợp tác.",
+            khan_trai_ban: "Bài học đưa ra vấn đề có tính mở, đa chiều. Kĩ thuật khăn trải bàn đảm bảo học sinh làm việc độc lập trước khi thống nhất nhóm, tránh triệt để tình trạng ỷ lại."
+        };
+
+        const ppNames = { truc_quan: "PHƯƠNG PHÁP TRỰC QUAN", kham_pha: "PHƯƠNG PHÁP KHÁM PHÁ", lapmap: "BÀN TAY NẶN BỘT (LAPMAP)", stem: "DẠY HỌC STEM" };
+        const ktNames = { manh_ghep: "KĨ THUẬT MẢNH GHÉP", kwl: "KĨ THUẬT KWL", khan_trai_ban: "KHĂN TRẢI BÀN", so_do_tu_duy: "SƠ ĐỒ TƯ DUY" };
+
+        function calculateResults() {
+            const form = document.getElementById('quizForm');
+            let answered = 0;
+            const answers = {};
+
+            ['q1', 'q2', 'q3', 'q4', 'q5'].forEach(q => {
+                const checked = form.querySelector(`input[name="${q}"]:checked`);
+                if (checked) {
+                    answers[q] = checked.value;
+                    answered++;
+                }
+            });
+
+            if (answered < 5) {
+                alert("Vui lòng trả lời đầy đủ 5 câu hỏi để hệ thống phân tích chính xác nhất!");
+                return;
+            }
+
+            // Tính điểm
+            let ppScores = { truc_quan: 0, lapmap: 0, kham_pha: 0, stem: 0 };
+            let ktScores = { manh_ghep: 0, kwl: 0, khan_trai_ban: 0, so_do_tu_duy: 0 };
+
+            for (let [q, ans] of Object.entries(answers)) {
+                let rules = scoringMatrix[q][ans];
+                if (rules.pp) {
+                    for (let [pp, score] of Object.entries(rules.pp)) ppScores[pp] += score;
+                }
+                if (rules.kt) {
+                    for (let [kt, score] of Object.entries(rules.kt)) ktScores[kt] += score;
+                }
+            }
+
+            // Sắp xếp
+            const sortedPP = Object.keys(ppScores).sort((a,b) => ppScores[b] - ppScores[a]);
+            const sortedKT = Object.keys(ktScores).sort((a,b) => ktScores[b] - ktScores[a]);
+
+            const topPP = sortedPP[0];
+            const topPPScore = ppScores[topPP];
+            const secondPP = sortedPP[1];
+            const secondPPScore = ppScores[secondPP];
+
+            const topKT = sortedKT[0];
+            const topKTScore = ktScores[topKT];
+            const secondKT = sortedKT[1];
+            const secondKTScore = ktScores[secondKT];
+
+            let html = '';
+
+            // Render PP Chính
+            html += `
+                <div class="result-item primary">
+                    <h4 style="color: var(--primary-blue)"><i class="fas fa-bullseye"></i> PHƯƠNG PHÁP ĐỀ XUẤT CHÍNH: ${ppNames[topPP]}</h4>
+                    <p><strong>Mức độ phù hợp:</strong> ${topPPScore >= 12 ? 'Rất Cao' : 'Cao'} (${topPPScore}/15 điểm)</p>
+                    <p><strong>Lý do phù hợp:</strong> ${reasonsMap[topPP]}</p>
+                </div>
+            `;
+
+            // Kiểm tra PP thay thế (chênh lệch <= 2 điểm)
+            if (topPPScore > 0 && (topPPScore - secondPPScore) <= 2 && secondPPScore > 0) {
+                let note = '';
+                if ((topPP === 'kham_pha' && secondPP === 'lapmap') || (topPP === 'lapmap' && secondPP === 'kham_pha')) {
+                    note = ' <br><em>*Lưu ý: LAPMAP và Khám phá rất giống nhau. LAPMAP khắt khe hơn (yêu cầu học sinh làm thí nghiệm thực tế với vật thật, không dùng học liệu thứ cấp trừu tượng). Tùy vào tính sờ nắm được của bài học mà bạn linh hoạt chọn.</em>';
+                }
+                html += `
+                    <div class="result-item">
+                        <h4 style="color: var(--primary-orange)"><i class="fas fa-sync-alt"></i> PHƯƠNG PHÁP KẾT HỢP/THAY THẾ: ${ppNames[secondPP]}</h4>
+                        <p><strong>Mức độ phù hợp:</strong> Cao (${secondPPScore}/15 điểm)</p>
+                        <p><strong>Lý do phù hợp:</strong> ${reasonsMap[secondPP]} ${note}</p>
+                    </div>
+                `;
+            }
+
+            // Render KT Chính
+            if(topKTScore > 0) {
+                html += `
+                    <div class="result-item primary">
+                        <h4 style="color: var(--primary-green)"><i class="fas fa-tools"></i> KĨ THUẬT ĐỀ XUẤT CHÍNH: ${ktNames[topKT]}</h4>
+                        <p><strong>Mức độ phù hợp:</strong> Rất Cao (${topKTScore}/12 điểm)</p>
+                        <p><strong>Lý do phù hợp:</strong> ${reasonsMap[topKT]}</p>
+                        <p><em>Cách sử dụng: Lồng ghép kĩ thuật này vào các hoạt động nhóm hoặc kiểm tra đánh giá của phương pháp chính để mang lại hiệu quả cao nhất.</em></p>
+                    </div>
+                `;
+            }
+
+            // Kiểm tra KT kết hợp
+            if (topKTScore > 0 && (topKTScore - secondKTScore) <= 2 && secondKTScore > 0) {
+                html += `
+                    <div class="result-item">
+                        <h4 style="color: var(--primary-purple)"><i class="fas fa-plus-circle"></i> KĨ THUẬT KẾT HỢP: ${ktNames[secondKT]}</h4>
+                        <p><strong>Mức độ phù hợp:</strong> Khá (${secondKTScore}/12 điểm)</p>
+                        <p><strong>Lý do phù hợp:</strong> ${reasonsMap[secondKT]}</p>
+                    </div>
+                `;
+            }
+
+            document.getElementById('result-content').innerHTML = html;
+            document.getElementById('quiz-result-area').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('quiz-result-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ================== LOGIC ĐIỀU HƯỚNG ==================
+        let historyStack = [];
+
+        function enterApp() {
+            document.getElementById('intro').classList.remove('active');
+            document.getElementById('intro').style.display = 'none';
+            document.getElementById('main-nav').style.display = 'flex';
+            document.getElementById('main-footer').style.display = 'block'; // Hiện footer
+            document.getElementById('main-content').style.display = 'block';
+            navigate('home');
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            
+            const btnBack = document.getElementById('btn-back');
+            if (screenId === 'home') {
+                btnBack.style.display = 'none';
+                historyStack = ['home'];
+            } else {
+                btnBack.style.display = 'inline-flex';
+            }
+            window.scrollTo(0,0);
+        }
+
+        function navigate(screenId) {
+            if (historyStack[historyStack.length - 1] !== screenId) {
+                historyStack.push(screenId);
+            }
+            showScreen(screenId);
+        }
+
+        function goBack() {
+            if (historyStack.length > 1) {
+                historyStack.pop(); 
+                const prevScreen = historyStack[historyStack.length - 1];
+                showScreen(prevScreen);
+            }
+        }
+
+        function openDetail(category, itemId) {
+            const data = db[category][itemId];
+            if (!data) return;
+
+            document.getElementById('detail-title').innerText = data.title;
+            document.getElementById('detail-icon').className = `fas ${data.icon}`;
+            document.getElementById('detail-image').src = data.image;
+            document.getElementById('detail-banchat').innerHTML = data.banchat;
+            document.getElementById('detail-quytrinh').innerHTML = data.quytrinh;
+            document.getElementById('detail-uudiem').innerHTML = data.uudiem;
+            document.getElementById('detail-nhuocdiem').innerHTML = data.nhuocdiem;
+            document.getElementById('detail-dieukien').innerHTML = data.dieukien;
+
+            navigate('detail');
+        }
+    </script>
+</body>
+</html>
